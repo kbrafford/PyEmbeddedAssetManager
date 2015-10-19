@@ -148,6 +148,8 @@ if __name__ == "__main__":
     import py_compile
 
     class InMemoryZip(object):
+        """InMemoryZip class, courtesy of this stack overflow article:
+   http://stackoverflow.com/questions/2463770/python-in-memory-zip-library"""
         def __init__(self):
             # Create the in-memory file-like object
             self.in_memory_zip = cStringIO.StringIO()
