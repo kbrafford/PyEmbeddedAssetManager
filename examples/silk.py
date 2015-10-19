@@ -13591,20 +13591,22 @@ MY_ARCHIVE = (
             )
 
 
-
+global GENERATE_COMPILED_VERSION
+GENERATE_COMPILED_VERSION = False
 
 #<-------------------------------------------------------------------------->#
 #----------------------------------------------------------------------------
-# Name:         ArtManager.py
+# Name:         PyEmbeddedAssetManager.py
 # Purpose:      Make art repositories easier to maintain and refactor
-#             
+#
 # Original Author:       Keith Brafford
 #                        keith.brafford@gmail.com
 #                        Embedded Excellence, Inc.
 #
-# Version:      1.0
-# Date:         24 November 2011
-# Licence:      wxWindows license
+# Version:      1.4
+# Date:         12 March 2012
+#
+# License:      wxWindows license
 #
 #               Tip: for faster load times, use the compileall module to make
 #                    pyc or pyo files after regenerating or exporting new art
@@ -13614,6 +13616,45 @@ MY_ARCHIVE = (
 #                    python -O -m compileall ./
 #
 #----------------------------------------------------------------------------
+#
+# 1.4 Release - Keith Brafford
+# Date:         12 March 2012
+#
+# o Fixed bug in named asset retrieval
+#
+#----------------------------------------------------------------------------
+#
+# 1.3 Release - Keith Brafford
+# Date:         11 January 2012
+#
+# o Changed exported module extension back to .py
+#
+#----------------------------------------------------------------------------
+#
+# 1.2 Release - Keith Brafford
+# Date:         5 January 2012
+#
+# o Changed exported module extension to .pyw
+#
+#----------------------------------------------------------------------------
+#
+# 1.1 Release - Keith Brafford
+#
+# o Added support for compiled modules
+# o Made it clearer when large modules were being processed
+#
+#----------------------------------------------------------------------------
+#
+# 1.0 Release - Keith Brafford
+# Date:         24 November 2011
+#
+# o Original PyEmbeddedImageManager released
+#
+#----------------------------------------------------------------------------
+
+__version__ = "1.4"
+__author__  = "Keith Brafford <keith.brafford@gmail.com>"
+__date__    = "12 March 2012"
 
 import wx
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -13635,61 +13676,83 @@ class _ArtManager(object):
     def __init__(self, archive = MY_ARCHIVE, root=""):
         data = base64.decodestring(archive)
         self.zipfile = None
+        self.assetusagelist = set([])
         if archive:
             self.zipfile = zipfile.ZipFile(cStringIO.StringIO(data),"r")
+            self.assetusagelist = set(self.GetAssetList())
         self.root = root
         self.imagecache, self.bitmapcache, self.iconcache = {},{},{}
     def SetRoot(self, root):
         self.root = root
     def GetImage(self, filename):
         filename = os.path.join(self.root,filename)
+        self.assetusagelist.discard(filename)
         if self.imagecache.has_key(filename):
             return self.imagecache[filename]
         bitmapfile = self.zipfile.open()
-        return wx.ImageFromStream(cStringIO.StringIO(bitmapfile.read()))
+        image = wx.ImageFromStream(cStringIO.StringIO(bitmapfile.read()))
+        self.imagecache[filename] = image
+        return image
     def GetBitmap(self, filename):
         filename = os.path.join(self.root,filename)
+        self.assetusagelist.discard(filename)
         if self.bitmapcache.has_key(filename):
-            return self.bitmapcache[filename]    
+            return self.bitmapcache[filename]
         bitmapfile = self.zipfile.open(filename)
         image = wx.ImageFromStream(cStringIO.StringIO(bitmapfile.read()))
-        return image.ConvertToBitmap()
+        bitmap = image.ConvertToBitmap()
+        self.bitmapcache[filename] = bitmap
+        return bitmap
     def GetIcon(self, filename):
         filename = os.path.join(self.root,filename)
+        self.assetusagelist.discard(filename)
         if self.iconcache.has_key(filename):
             return self.iconcache[filename]
         bitmapfile = self.zipfile.open(filename)
         pei =  PyEmbeddedImage(bitmapfile.read(), isBase64 = False)
-        return pei.GetIcon()
-    def GetArtList(self):
+        icon = pei.GetIcon()
+        self.iconcache[filename] = icon
+        return icon
+    def GetAssetList(self):
         if self.zipfile:
             return self.zipfile.namelist()
         else:
             return []
+    def GetNamedContents(self, name):
+        filename = os.path.join(self.root,name)
+        self.assetusagelist.discard(filename)
+        fp = self.zipfile.open(filename)
+        return fp.read()
+    def GetLicense(self):
+        return self.GetNamedContents("License.txt")
+    def GetUnusedAssetList(self):
+        return self.assetusagelist
 
 if __name__ == "__main__":
-    import wx
-    import tempfile        
+    import tempfile
     import textwrap
     import shutil
     import sys
-    
+    import py_compile
+
     class InMemoryZip(object):
+        """InMemoryZip class, courtesy of this stack overflow article:
+   http://stackoverflow.com/questions/2463770/python-in-memory-zip-library"""
         def __init__(self):
             # Create the in-memory file-like object
             self.in_memory_zip = cStringIO.StringIO()
-    
+
         def append(self, filename_in_zip, file_contents):
             '''Appends a file with name filename_in_zip and contents of
                file_contents to the in-memory zip.'''
             # Get a handle to the in-memory zip in append mode
             zf = zipfile.ZipFile(self.in_memory_zip, "a", zipfile.ZIP_DEFLATED, False)
             # Write the file to the in-memory zip
-            zf.writestr(filename_in_zip, file_contents)      
+            zf.writestr(filename_in_zip, file_contents)
             # Mark the files as having been created on Windows so that
             # Unix permissions are not inferred as 0000
             for zfile in zf.filelist:
-                zfile.create_system = 0      
+                zfile.create_system = 0
             return self
         def read(self):
             '''Returns a string with the contents of the in-memory zip.'''
@@ -13703,17 +13766,18 @@ if __name__ == "__main__":
             zf.extractall(tempdir)
         return tempdir
 
-    def DeleteTempFiles(tempdir):        
+    def DeleteTempFiles(tempdir):
         try:
             shutil.rmtree(tempdir)
             return True
         except:
             return False
 
-    def BundleArchive(tempdir):        
+    def BundleArchive(tempdir):
+        global GENERATE_COMPILED_VERSION
         zipfiledata = ""
-        imz = InMemoryZip()    
-        rootlen = len(tempdir)                 
+        imz = InMemoryZip()
+        rootlen = len(tempdir)
         if tempdir != None:
             for root, dirs, files in os.walk(tempdir):
                 basedir = root[rootlen:]
@@ -13726,16 +13790,18 @@ if __name__ == "__main__":
             zipfiledata = imz.read()
         b64data = base64.encodestring(zipfiledata)
         b64lines = textwrap.wrap(b64data, 80)
-        b64lines = ['    "%s"\n' % line for line in b64lines]  
+        b64lines = ['    "%s"\n' % line for line in b64lines]
         if len(b64lines) > 0:
             new_archive = ["MY_ARCHIVE = (\n"]
             new_archive.extend(b64lines)
             new_archive.append("            )\n\n\n\n\n")
         else:
             new_archive = ['MY_ARCHIVE = ""\n\n\n\n\n']
+        new_archive.append("GENERATE_COMPILED_VERSION = %s\n\n\n\n" % str(GENERATE_COMPILED_VERSION))
         return new_archive
 
     def ProcessModule(new_archive, filename, template):
+        global GENERATE_COMPILED_VERSION
         with open(template, "rb") as f:
             while True:
                 line = f.readline()
@@ -13743,10 +13809,14 @@ if __name__ == "__main__":
                     keeper = [line]
                     keeper.extend(f.readlines())
                     break
+        if not filename.endswith(".py"): filename += ".py"
         f = open(filename, "wb")
         f.writelines(new_archive)
         f.writelines(keeper)
         f.close()
+        if GENERATE_COMPILED_VERSION:
+            print "Doing compiled version"
+            py_compile.compile(filename)
 
     class MyDialog(wx.Dialog):
         def __init__(self, parent, id = -1, artman = None):
@@ -13754,40 +13824,84 @@ if __name__ == "__main__":
                 wx.MessageBox("No Art Manager specified", "Error", wx.OK)
                 self.EndModal(-1)
                 return
-            
-            wx.Dialog.__init__(self, parent,id, "Art Manager", pos = (1,1), style = wx.DEFAULT_DIALOG_STYLE)
+            title = "Art Manager - %s" % sys.argv[0]
+            wx.Dialog.__init__(self, parent,id, title, pos = (5,5), style = wx.DEFAULT_DIALOG_STYLE)
             self.artman = artman
             self.button_delete = wx.Button(self, -1, "Delete Temp Files (No Reencode)")
-            self.button_explore = wx.Button(self, -1, "Extract and Explore")            
+            self.button_explore = wx.Button(self, -1, "Extract and Explore")
             self.button_encode = wx.Button(self, -1, "Encode And Repack")
             self.button_export = wx.Button(self, -1, "Export New Module")
+#            self.checkbox_provider = wx.CheckBox(self, -1, "Include ArtProvider?")
+            self.static_line = wx.StaticLine(self, -1, style = wx.LI_VERTICAL)
+            self.static_line2 = wx.StaticLine(self, -1, style = wx.LI_VERTICAL)
+
+            self.checkbox_compile = wx.CheckBox(self, -1, "Generate .pyc(o)", style = wx.ALIGN_RIGHT)
 
             self.buttonsizer = wx.BoxSizer(wx.HORIZONTAL)
-            self.buttonsizer.AddStretchSpacer(1)            
-            self.buttonsizer.Add(self.button_explore, 0)
-            self.buttonsizer.AddSpacer(25)            
-            self.buttonsizer.Add(self.button_encode, 0)
-            self.buttonsizer.Add(self.button_export, 0)            
-            self.buttonsizer.AddSpacer(25)            
-            self.buttonsizer.Add(self.button_delete,0)
-            self.buttonsizer.AddStretchSpacer(1)
-                                    
+            self.buttonsizer.AddStretchSpacer()
+            self.buttonsizer.Add(self.button_explore, 0, wx.ALIGN_CENTRE_VERTICAL | wx.LEFT, 5)
+            self.buttonsizer.AddSpacer(20)
+            self.buttonsizer.Add(self.static_line, 0, wx.EXPAND | wx.ALL, 5)
+            self.buttonsizer.AddSpacer(20)
+#            self.buttonsizer.Add(self.checkbox_provider, 0, wx.ALIGN_CENTRE_VERTICAL |wx.LEFT | wx.RIGHT, 5)
+
+            self.middlesizer = wx.BoxSizer(wx.VERTICAL)
+            self.middletopsizer = wx.BoxSizer(wx.HORIZONTAL)
+            self.middletopsizer.Add(self.button_encode, 0, wx.ALIGN_CENTRE_VERTICAL | wx.RIGHT,  10)
+            self.middletopsizer.Add(self.button_export, 0, wx.ALIGN_CENTRE_VERTICAL | wx.LEFT, 10)
+            self.middlebottomsizer = wx.BoxSizer(wx.HORIZONTAL)
+            self.middlebottomsizer.AddStretchSpacer()
+            self.middlebottomsizer.Add(self.checkbox_compile, 0, wx.RIGHT, 25)
+            self.middlebottomsizer.AddStretchSpacer()
+            self.middlesizer.Add(self.middletopsizer,0)
+            self.middlesizer.Add(self.middlebottomsizer,0, wx.BOTTOM | wx.TOP | wx.EXPAND, 5)
+
+            self.buttonsizer.Add(self.middlesizer, 0)
+
+            self.buttonsizer.AddSpacer(20)
+            self.buttonsizer.Add(self.static_line2, 0, wx.EXPAND | wx.ALL, 5)
+            self.buttonsizer.AddSpacer(20)
+
+            self.buttonsizer.Add(self.button_delete,0, wx.ALIGN_CENTRE_VERTICAL | wx.RIGHT, 5)
+            self.buttonsizer.AddStretchSpacer()
+
+#            self.app = ArtProviderPanel(self)
+
             self.mainsizer = wx.BoxSizer(wx.VERTICAL)
+            self.mainsizer.Add(self.buttonsizer,0, wx.EXPAND | wx.TOP, 2)
 
-            self.mainsizer.Add(self.buttonsizer,0, wx.EXPAND)
 
-            self.button_explore.Bind(wx.EVT_BUTTON, self.OnExplore)            
+#            self.mainsizer.Add(self.app, 0, wx.EXPAND)
+
+            self.button_explore.Bind(wx.EVT_BUTTON, self.OnExplore)
             self.button_encode.Bind(wx.EVT_BUTTON, self.OnEncode)
-            self.button_export.Bind(wx.EVT_BUTTON, self.OnExport)            
+            self.button_export.Bind(wx.EVT_BUTTON, self.OnExport)
             self.button_delete.Bind(wx.EVT_BUTTON, self.OnDelete)
-            
+#            self.checkbox_provider.Bind(wx.EVT_CHECKBOX, self.OnCheckBox)
+
+#            self.checkbox_provider.Enable(False)
             self.button_encode.Enable(False)
             self.button_delete.Enable(False)
-            self.button_export.Enable(False)            
+            self.button_export.Enable(False)
+            self.checkbox_compile.Enable(False)
 
             self.Bind(wx.EVT_CLOSE, self.OnClose)
-            self.SetSize((600,-1))
-            self.SetSizerAndFit(self.mainsizer)
+
+#            self.app.Hide()
+            self.SetSizer(self.mainsizer)
+            self.width, h = self.mainsizer.CalcMin()
+            w,h = self.mainsizer.CalcMin()
+            self.SetSize((self.width, h+30))
+            self.checkbox_compile.SetValue(GENERATE_COMPILED_VERSION)
+
+#        def OnCheckBox(self, event):
+#            if self.checkbox_provider.GetValue():
+#                self.app.Show(True)
+#            else:
+#                self.app.Show(False)
+#            w,h = self.mainsizer.CalcMin()
+#            self.SetSize((self.width, h+30))
+#            self.Update()
 
         def OnClose(self, event):
             self.Destroy()
@@ -13802,10 +13916,28 @@ if __name__ == "__main__":
                 wx.MessageBox("Can not delete the temp files.  You may need to close the app","Error", wx.OK)
             self.Close()
 
+        def OnExport(self, event):
+            global GENERATE_COMPILED_VERSION
+            import os
+            dlg = wx.FileDialog(self, "Export New Module", os.getcwd(), "", "*.py", wx.FD_SAVE)
+            if dlg.ShowModal() == wx.ID_OK:
+                GENERATE_COMPILED_VERSION = self.checkbox_compile.GetValue()
+                new_archive = BundleArchive(self.tempdir)
+                filename = dlg.GetPath()
+                ourfile = sys.argv[0]
+                self.button_delete.Enable(False)
+                self.button_encode.Enable(False)
+                self.checkbox_compile.Enable(False)
+                ProcessModule(new_archive, filename, ourfile)
+                self.PerformDelete()
+
         def OnEncode(self, event):
+            global GENERATE_COMPILED_VERSION
             self.button_delete.Enable(False)
             self.button_encode.Enable(False)
-            wx.BeginBusyCursor()            
+            GENERATE_COMPILED_VERSION = self.checkbox_compile.GetValue()
+            self.checkbox_compile.Enable(False)
+            wx.BeginBusyCursor()
             wx.CallAfter(self.PerformEncode)
 
         def PerformEncode(self):
@@ -13817,9 +13949,13 @@ if __name__ == "__main__":
 
         def OnExplore(self, event):
             self.button_explore.Enable(False)
-            self.button_encode.Enable(True)
+            if os.path.split(sys.argv[0])[1] not in ("PyEmbeddedImageManager.py", "PyEmbeddedImageManager.pyw"):
+                self.button_encode.Enable(True)
             self.button_delete.Enable(True)
             self.button_export.Enable(True)
+            self.checkbox_compile.Enable(True)
+
+#            self.checkbox_provider.Enable(True)
             wx.CallAfter(self.PerformExtract)
 
         def PerformExtract(self):
@@ -13833,20 +13969,14 @@ if __name__ == "__main__":
                 exe = "explorer.exe"
             elif sys.platform == "darwin":
                 exe = "open"
+            elif sys.platform == "linux2":
+                exe = "gnome-open"
             else:
                 raise NotImplementedError("Not implemented for %s" % sys.platform)
 
             import subprocess
-            subprocess.call(["explorer.exe", "%s" % self.tempdir])
+            subprocess.call([exe, "%s" % self.tempdir])
 
-        def OnExport(self, event):
-            import os
-            dlg = wx.FileDialog(self, "Export New Module", os.getcwd(), "", "*.py", wx.FD_SAVE)
-            if dlg.ShowModal() == wx.ID_OK:
-                new_archive = BundleArchive(self.tempdir)
-                filename = dlg.GetPath()
-                ProcessModule(new_archive, filename, __file__)
-                self.PerformDelete()
 
     a = wx.PySimpleApp()
 
