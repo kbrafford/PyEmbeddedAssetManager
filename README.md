@@ -3,8 +3,8 @@ Makes it easy to maintain and use embedded assets in a python program
 
 ##TODO: 
 
-1) Add a proper description and tutorial explaining how to use the tool
-2) Refactoring plan:
+1. Add a proper description and tutorial explaining how to use the tool
+2. Refactoring plan:
   * Support output of images as Numpy arrays
   * Rearrange so that wx isn't required unless necessary (for instance)
     if the user is using for non-image assets
