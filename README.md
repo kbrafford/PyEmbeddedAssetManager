@@ -34,9 +34,9 @@ a PyEmbeddedAssetManager module will self-execute as well.  If you run one
 of these modules in this fashion, then you get a very simple wx GUI that will
 let you:
 
-1) extract your archive of assets into a folder you can browse
-2) modify the repository (add, delete, modify, admire, whatever)
-3) repack the repo into a new PyEmbeddedAssetManager module
+1. extract your archive of assets into a folder you can browse
+2. modify the repository (add, delete, modify, admire, whatever)
+3. repack the repo into a new PyEmbeddedAssetManager module
 
 That's all for now.  I hope to do a proper write-up in a bit.
 
