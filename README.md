@@ -28,11 +28,43 @@ let you:
 2. modify the repository (add, delete, modify, admire, whatever)
 3. repack the repo into a new PyEmbeddedAssetManager module
 
-That's all for now.  I hope to do a proper write-up in a bit.
+Here is a shot of an Embedded Asset Manager being edited:
+
+![PyEmbeddedAssetManager screen](/tutorial/image_1.png)
+
+Press "Extract and Explore" to view the contents:
+
+![Browsing an empty asset manager](/tutorial/image_2.png)
+
+Add your artwork or other files to your Asset Manager.  You
+can also create directories.  Go wild!  Here's a simple example,
+using some of my favorite free icons, the Silk set:
+
+![Adding files to the Asset Manager](/tutorial/image_3.png)
+
+Once you've added your assets to the folder, you can press
+"Export New Module" and create a new Asset Manager...
+
+![Exporting a new module](/tutorial/image_4.png)
+
+...Complete with your assets and a self-contained ability to edit
+the repository:
+
+![New python module](/tutorial/image_5.png)
+
+And when you "run" your new repo in stand-alone mode, you can add
+new content, remove files, edit files in place...whatever.  Just
+re-encode when you're done.
+
+![Finished repo](/tutorial/image_6.png)
+
 
 ###TODO: 
 
-1. Add a proper description and tutorial explaining how to use the tool
+1. Add a proper description and tutorial explaining how to use the tool.
+   Included will be examples showing how the programmer importing the module
+   actually uses it.
+
 2. Refactoring plan:
   * Support output of images as Numpy arrays
   * Rearrange so that wx isn't required unless necessary (for instance)
