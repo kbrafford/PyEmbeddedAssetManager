@@ -233,10 +233,10 @@ if __name__ == "__main__":
     class MyDialog(wx.Dialog):
         def __init__(self, parent, id = -1, artman = None):
             if artman == None:
-                wx.MessageBox("No Art Manager specified", "Error", wx.OK)
+                wx.MessageBox("No Asset Manager specified", "Error", wx.OK)
                 self.EndModal(-1)
                 return
-            title = "Art Manager - %s" % sys.argv[0]
+            title = "Asset Manager - %s" % sys.argv[0]
             wx.Dialog.__init__(self, parent,id, title, pos = (5,5), style = wx.DEFAULT_DIALOG_STYLE)
             self.artman = artman
             self.button_delete = wx.Button(self, -1, "Delete Temp Files (No Reencode)")
