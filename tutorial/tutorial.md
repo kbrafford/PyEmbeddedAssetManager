@@ -22,4 +22,9 @@ the repository:
 
 ![New python module](/tutorial/image_5.png)
 
+And when you "run" your new repo in stand-alone mode, you can add
+new content, remove files, edit files in place...whatever.  Just
+re-encode when you're done.
+
+![Finished repo](/tutorial/image_6.png)
 
