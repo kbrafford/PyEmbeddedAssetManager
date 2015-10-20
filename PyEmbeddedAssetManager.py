@@ -9,64 +9,12 @@ GENERATE_COMPILED_VERSION = False
 #<-------------------------------------------------------------------------->#
 #----------------------------------------------------------------------------
 # Name:         PyEmbeddedAssetManager.py
-# Purpose:      Make art repositories easier to maintain and refactor
-#
-# Original Author:       Keith Brafford
-#                        keith.brafford@gmail.com
-#                        Embedded Excellence, Inc.
-#
-# Version:      1.4
-# Date:         12 March 2012
-#
-# License:      wxWindows license
-#
-#               Tip: for faster load times, use the compileall module to make
-#                    pyc or pyo files after regenerating or exporting new art
-#                    modules.  For example, run the following command from
-#                    the directory where the modules live:
-#
-#                    python -O -m compileall ./
-#
-#----------------------------------------------------------------------------
-#
-# 1.4 Release - Keith Brafford
-# Date:         12 March 2012
-#
-# o Fixed bug in named asset retrieval
-#
-#----------------------------------------------------------------------------
-#
-# 1.3 Release - Keith Brafford
-# Date:         11 January 2012
-#
-# o Changed exported module extension back to .py
-#
-#----------------------------------------------------------------------------
-#
-# 1.2 Release - Keith Brafford
-# Date:         5 January 2012
-#
-# o Changed exported module extension to .pyw
-#
-#----------------------------------------------------------------------------
-#
-# 1.1 Release - Keith Brafford
-#
-# o Added support for compiled modules
-# o Made it clearer when large modules were being processed
-#
-#----------------------------------------------------------------------------
-#
-# 1.0 Release - Keith Brafford
-# Date:         24 November 2011
-#
-# o Original PyEmbeddedImageManager released
-#
+# Purpose:      Make asset repositories easier to maintain and refactor
 #----------------------------------------------------------------------------
 
-__version__ = "1.4"
-__author__  = "Keith Brafford <keith.brafford@gmail.com>"
-__date__    = "12 March 2012"
+__version__ = "1.5"
+__author__  = "Keith Brafford"
+__date__    = "20 Oct 2015"
 
 import wx
 from wx.lib.embeddedimage import PyEmbeddedImage
