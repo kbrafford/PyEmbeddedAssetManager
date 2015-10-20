@@ -1,16 +1,6 @@
 # PyEmbeddedAssetManager
 Makes it easy to maintain and use embedded assets in a python program
 
-##TODO: 
-
-1. Add a proper description and tutorial explaining how to use the tool
-2. Refactoring plan:
-  * Support output of images as Numpy arrays
-  * Rearrange so that wx isn't required unless necessary (for instance)
-    if the user is using for non-image assets
-  * Add cmd-line args for build script automation.  I'll add more details
-    later for why someone might want this
-
 ##**Quick intro for the time being**
 
 The PyEmbeddedAssetManager is a self-modifying python script that acts
@@ -39,5 +29,15 @@ let you:
 3. repack the repo into a new PyEmbeddedAssetManager module
 
 That's all for now.  I hope to do a proper write-up in a bit.
+
+###TODO: 
+
+1. Add a proper description and tutorial explaining how to use the tool
+2. Refactoring plan:
+  * Support output of images as Numpy arrays
+  * Rearrange so that wx isn't required unless necessary (for instance)
+    if the user is using for non-image assets
+  * Add cmd-line args for build script automation.  I'll add more details
+    later for why someone might want this
 
 
