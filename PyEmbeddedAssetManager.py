@@ -10,6 +10,7 @@ GENERATE_COMPILED_VERSION = False
 #----------------------------------------------------------------------------
 # Name:         PyEmbeddedAssetManager.py
 # Purpose:      Make asset repositories easier to maintain and refactor
+# Home:         https://github.com/kbrafford/PyEmbeddedAssetManager
 #----------------------------------------------------------------------------
 
 __version__ = "1.5"
