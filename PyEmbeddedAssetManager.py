@@ -13,9 +13,9 @@ GENERATE_COMPILED_VERSION = False
 # Home:         https://github.com/kbrafford/PyEmbeddedAssetManager
 #----------------------------------------------------------------------------
 
-__version__ = "1.5"
+__version__ = "1.6"
 __author__  = "Keith Brafford"
-__date__    = "20 Oct 2015"
+__date__    = "22 Oct 2015"
 
 import wx
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -333,7 +333,7 @@ if __name__ == "__main__":
             elif sys.platform == "darwin":
                 exe = "open"
             elif sys.platform == "linux2":
-                exe = "gnome-open"
+                exe = "xdg-open"
             else:
                 raise NotImplementedError("Not implemented for %s" % sys.platform)
 
