@@ -13980,7 +13980,7 @@ if __name__ == "__main__":
             elif sys.platform == "darwin":
                 exe = "open"
             elif sys.platform == "linux2":
-                exe = "gnome-open"
+                exe = "xdg-open"
             else:
                 raise NotImplementedError("Not implemented for %s" % sys.platform)
 
