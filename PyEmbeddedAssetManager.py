@@ -1,8 +1,5 @@
 MY_ARCHIVE = ""
 
-
-
-
 global GENERATE_COMPILED_VERSION
 GENERATE_COMPILED_VERSION = False
 
@@ -155,10 +152,10 @@ if __name__ == "__main__":
         if len(b64lines) > 0:
             new_archive = ["MY_ARCHIVE = (\n"]
             new_archive.extend(b64lines)
-            new_archive.append("            )\n\n\n\n\n")
+            new_archive.append("            )\n\n")
         else:
-            new_archive = ['MY_ARCHIVE = ""\n\n\n\n\n']
-        new_archive.append("GENERATE_COMPILED_VERSION = %s\n\n\n\n" % str(GENERATE_COMPILED_VERSION))
+            new_archive = ['MY_ARCHIVE = ""\n']
+        new_archive.append("GENERATE_COMPILED_VERSION = %s\n\n" % str(GENERATE_COMPILED_VERSION))
         return new_archive
 
     def ProcessModule(new_archive, filename, template):
