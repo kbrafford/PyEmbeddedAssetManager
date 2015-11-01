@@ -262,7 +262,6 @@ if __name__ == "__main__":
 #            self.Update()
 
         def OnClose(self, event):
-            self.Destroy()
             self.EndModal(0)
 
         def OnDelete(self, event):
@@ -340,7 +339,9 @@ if __name__ == "__main__":
     a = wx.App()
 
     artman = GetArtManager()
-    dlg = MyDialog(None, artman = artman)
 
+    dlg = MyDialog(None, artman = artman)
     dlg.ShowModal()
+    dlg.Destroy()
+
     a.MainLoop()
