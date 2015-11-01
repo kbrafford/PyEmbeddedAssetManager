@@ -263,8 +263,7 @@ if __name__ == "__main__":
 
         def OnClose(self, event):
             self.Destroy()
-            import sys
-            wx.CallLater(100, sys.exit,0)
+            self.EndModal(0)
 
         def OnDelete(self, event):
             self.button_delete.Enable(False)
