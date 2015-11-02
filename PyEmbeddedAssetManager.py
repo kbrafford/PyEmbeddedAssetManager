@@ -1,6 +1,4 @@
 MY_ARCHIVE = ""
-
-global GENERATE_COMPILED_VERSION
 GENERATE_COMPILED_VERSION = False
 
 #<-------------------------------------------------------------------------->#
@@ -10,9 +8,9 @@ GENERATE_COMPILED_VERSION = False
 # Home:         https://github.com/kbrafford/PyEmbeddedAssetManager
 #----------------------------------------------------------------------------
 
-__version__ = "1.6"
+__version__ = "1.7"
 __author__  = "Keith Brafford"
-__date__    = "22 Oct 2015"
+__date__    = "2 Nov 2015"
 
 import wx
 from wx.lib.embeddedimage import PyEmbeddedImage
