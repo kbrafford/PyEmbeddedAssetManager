@@ -335,7 +335,6 @@ if __name__ == "__main__":
 
 
     a = wx.App()
-
     artman = GetArtManager()
 
     dlg = MyDialog(None, artman = artman)
