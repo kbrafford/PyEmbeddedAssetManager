@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
     def ProcessModule(new_archive, filename, template):
         global GENERATE_COMPILED_VERSION
-        with open(template, "rb") as f:
+        with open(template, "r") as f:
             while True:
                 line = f.readline()
                 if line.startswith("#<---"):
@@ -168,7 +168,7 @@ if __name__ == "__main__":
                     keeper.extend(f.readlines())
                     break
         if not filename.endswith(".py"): filename += ".py"
-        f = open(filename, "wb")
+        f = open(filename, "w")
         f.writelines(new_archive)
         f.writelines(keeper)
         f.close()
