@@ -141,7 +141,7 @@ if __name__ == "__main__":
                 basedir = root[rootlen:]
                 for filename in files:
                     if not filename.startswith("."):
-                        with open(os.path.join(root,filename),"rb") as f:
+                        with open(os.path.join(root,filename),"r") as f:
                             contents = f.read()
                         zipfilename = os.path.join(basedir, filename)
                         imz.append(zipfilename,contents)
