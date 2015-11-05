@@ -13,7 +13,6 @@ __author__  = "Keith Brafford"
 __date__    = "2 Nov 2015"
 
 import wx
-from wx.lib.embeddedimage import PyEmbeddedImage
 import zipfile
 import cStringIO
 import base64
@@ -65,8 +64,9 @@ class _ArtManager(object):
         if self.iconcache.has_key(filename):
             return self.iconcache[filename]
         bitmapfile = self.zipfile.open(filename)
-        pei =  PyEmbeddedImage(bitmapfile.read(), isBase64 = False)
-        icon = pei.GetIcon()
+        image = wx.ImageFromStream(cStringIO.StringIO(bitmapfile.read()))
+        icon = wx.Icon()
+        icon.CopyFromBitmap(wx.Bitmap(image))
         self.iconcache[filename] = icon
         return icon
     def GetAssetList(self):
