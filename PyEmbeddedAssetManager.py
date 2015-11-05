@@ -70,10 +70,7 @@ class _ArtManager(object):
         self.iconcache[filename] = icon
         return icon
     def GetAssetList(self):
-        if self.zipfile:
-            return self.zipfile.namelist()
-        else:
-            return []
+        return self.zipfile.namelist() if self.zipfile else []
     def GetNamedContents(self, name):
         filename = os.path.join(self.root,name)
         self.assetusagelist.discard(filename)
