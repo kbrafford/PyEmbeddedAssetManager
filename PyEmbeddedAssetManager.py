@@ -45,7 +45,7 @@ class _ArtManager(object):
         self.assetusagelist.discard(filename)
         if self.imagecache.has_key(filename):
             return self.imagecache[filename]
-        bitmapfile = self.zipfile.open()
+        bitmapfile = self.zipfile.open(filename)
         image = wx.ImageFromStream(cStringIO.StringIO(bitmapfile.read()))
         self.imagecache[filename] = image
         return image
