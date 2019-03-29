@@ -314,7 +314,7 @@ if __name__ == "__main__":
                 exe = "explorer.exe"
             elif sys.platform == "darwin":
                 exe = "open"
-            elif sys.platform == "linux2":
+            elif "linux" in sys.platform:
                 exe = "xdg-open"
             else:
                 raise NotImplementedError("Not implemented for %s" % sys.platform)
