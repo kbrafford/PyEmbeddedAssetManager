@@ -1,7 +1,7 @@
 # PyEmbeddedAssetManager
 Makes it easy to maintain and use embedded assets in a python program
 
-##**Quick intro for the time being**
+#**Quick intro for the time being**
 
 The PyEmbeddedAssetManager is a self-modifying python script that acts
 as a container for whatever stream archives (read: files) you may want to
@@ -16,7 +16,7 @@ PyEmbeddedAssetManager provides several methods for accessing your "files"
 at runtime, including several that automatically provide conversion to
 wx.Python graphics types.  Icons, Bitmaps, and Images are currently supported.
 
-##BUT WAIT, THERE'S MORE!
+#BUT WAIT, THERE'S MORE!
 
 The real strength of the PyEmbeddedAssetManager is the built-in management 
 scheme.  Though designed for you to import and use in other applications,
@@ -59,16 +59,16 @@ re-encode when you're done.
 ![Finished repo](/tutorial/image_6.png)
 
 
-###TODO: 
+#TODO: 
+0. More fully test on Python 2 and 3, fully testing all the wx outputs
 
 1. Add a proper description and tutorial explaining how to use the tool.
    Included will be examples showing how the programmer importing the module
-   actually uses it.
+   actually uses it. Update the tutorial too to reflect the new look.
 
 2. Refactoring plan:
   * Support output of images as Numpy arrays
-  * Rearrange so that wx isn't required unless necessary (for instance)
-    if the user is using for non-image assets
+  * direct support of PIL image type?
   * Add cmd-line args for build script automation.  I'll add more details
     later for why someone might want this
 
