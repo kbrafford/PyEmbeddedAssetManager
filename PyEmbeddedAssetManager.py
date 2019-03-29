@@ -226,11 +226,6 @@ if __name__ == "__main__":
 
             self.Bind(wx.EVT_CLOSE, self.OnClose)
 
-            #self.SetSizer(self.mainsizer)
-            #self.width, h = self.mainsizer.CalcMin()
-            #w,h = self.mainsizer.CalcMin()
-            #self.SetSize((self.width, h+30))
-
         def __set_properties(self):
             # begin wxGlade: MyDialog.__set_properties
             self.SetTitle("Asset Manager")
