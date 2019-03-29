@@ -1,4 +1,9 @@
-MY_ARCHIVE = ""
+MY_ARCHIVE = (
+    "UEsDBBQAAAAIAHGYfE7ohFjAQwAAAGwAAAAMAAAAcmF5bW9uZC5odG1ss8koyc2x4+VSAAKbjNTEFCgb"
+    "zC/JLMlJtVOorlYAsxRqaxVs9CGCUB36UC02SfkplSBBoFoQE6gUKKgPFQUqA9kCAFBLAQIUABQAAAAI"
+    "AHGYfE7ohFjAQwAAAGwAAAAMAAAAAAAAAAAAAACAAQAAAAByYXltb25kLmh0bWxQSwUGAAAAAAEAAQA6"
+    "AAAAbQAAAAAA"
+            )
 
 #<-------------------------------------------------------------------------->#
 #----------------------------------------------------------------------------
