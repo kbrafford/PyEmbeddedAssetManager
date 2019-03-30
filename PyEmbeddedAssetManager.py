@@ -203,6 +203,8 @@ if __name__ == "__main__":
                 self.EndModal(-1)
                 return
 
+            kwds["pos"] = (5,5)
+
             # begin wxGlade: MyDialog.__init__
             kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_DIALOG_STYLE
             wx.Dialog.__init__(self, *args, **kwds)
