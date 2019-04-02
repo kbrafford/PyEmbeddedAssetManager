@@ -12940,7 +12940,6 @@ else:
 import base64
 import os
 
-global ArtManager
 ArtManager = None
 
 def GetArtManager():
