@@ -9,7 +9,7 @@ MY_ARCHIVE = ""
 
 __version__ = "2.0"
 __author__  = "github.com/kbrafford"
-__date__    = "3 Mar 2019"
+__date__    = "17 Mar 2020"
 
 import zipfile
 import sys
